@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏯 Imperial Path: Journey Through the Forbidden City</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Georgia', 'STKaiti', '楷体', serif;
+    background: 
+      radial-gradient(ellipse at top, #f4e4c1 0%, #e8c896 40%, #c9a876 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding: 20px;
+    position: relative;
+  }
+  
+  /* Decorative cloud patterns */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(255,255,255,0.15) 0%, transparent 8%),
+      radial-gradient(circle at 80% 10%, rgba(255,255,255,0.12) 0%, transparent 10%),
+      radial-gradient(circle at 30% 80%, rgba(255,255,255,0.1) 0%, transparent 12%),
+      radial-gradient(circle at 90% 70%, rgba(255,255,255,0.13) 0%, transparent 9%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  .container {
+    max-width: 1450px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Imperial Title Banner */
+  .title-banner {
+    text-align: center;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: linear-gradient(135deg, #8b0000 0%, #c41e3a 50%, #8b0000 100%);
+    border: 4px solid #F0A32F;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4), inset 0 0 30px rgba(240,163,47,0.2);
+    position: relative;
+  }
+  
+  .title-banner::before, .title-banner::after {
+    content: '❖';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #F0A32F;
+    font-size: 28px;
+  }
+  .title-banner::before { left: 20px; }
+  .title-banner::after { right: 20px; }
+  
+  h1 {
+    color: #F0A32F;
+    font-size: 2.2em;
+    text-shadow: 3px 3px 0 #4a0000, 0 0 20px rgba(240,163,47,0.5);
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+  
+  .subtitle {
+    color: #ffeb99;
+    font-size: 1.1em;
+    font-style: italic;
+  }
+  
+  /* Score & Instructions Panel */
+  .info-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to right, #fff8e7, #f5e6c8);
+    padding: 15px 25px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 2px solid #8b0000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  
+  .instructions {
+    color: #4a0000;
+    font-size: 1.05em;
+    flex: 1;
+    line-height: 1.5;
+  }
+  
+  .instructions strong { color: #c41e3a; }
+  
+  .score-box {
+    background: #8b0000;
+    color: #F0A32F;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: 2px solid #F0A32F;
+    min-width: 120px;
+    text-align: center;
+    margin-left: 20px;
+  }
+  
+  /* Game Board - Imperial Path */
+  .game-board {
+    background: 
+      linear-gradient(180deg, rgba(139,0,0,0.05) 0%, rgba(201,168,118,0.1) 100%);
+    border: 3px solid #8b0000;
+    border-radius: 15px;
+    padding: 25px 15px;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  }
+  
+  .board-title {
+    text-align: center;
+    color: #8b0000;
+    font-size: 1.3em;
+    margin-bottom: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+  }
+  
+  /* 答题区：强制单行不换行 */
+  .imperial-path {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto; 
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 6px;
+    padding: 20px 10px;
+    background: 
+      linear-gradient(to right, transparent, rgba(240,163,47,0.15) 50%, transparent),
+      repeating-linear-gradient(90deg, 
+        transparent 0px, transparent 25px, 
+        rgba(139,0,0,0.3) 25px, rgba(139,0,0,0.3) 35px);
+    border-radius: 10px;
+    position: relative;
+    min-height: 200px;
+  }
+  
+  .compass {
+    position: absolute;
+    right: 15px;
+    top: 5px;
+    color: #8b0000;
+    font-weight: bold;
+    font-size: 0.95em;
+  }
+  
+  .compass-arrow {
+    display: inline-block;
+    font-size: 1.4em;
+  }
+  
+  /* Drop zones (slots) */
+  .slot {
+    flex: 1 0 95px;
+    min-width: 95px;
+    height: 160px;
+    border: 3px dashed #c9a876;
+    border-radius: 8px;
+    background: rgba(255,248,231,0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 6px 4px;
+    position: relative;
+    transition: all 0.3s;
+  }
+  
+  .slot.drag-over {
+    background: rgba(240,163,47,0.3);
+    border-color: #F0A32F;
+    transform: scale(1.05);
+  }
+  
+  .slot.correct {
+    border-color: #2e8b2e;
+    border-style: solid;
+    background: rgba(46,139,46,0.15);
+    animation: glow 1s ease;
+  }
+  
+  .slot.incorrect {
+    border-color: #c41e3a;
+    border-style: solid;
+    background: rgba(196,30,58,0.25);
+    animation: shake 0.4s;
+  }
+  
+  /* 错误放置时的巨大红叉视觉反馈 */
+  .wrong-mark {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3em;
+    color: #ff3333;
+    text-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    pointer-events: none;
+    z-index: 10;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  
+  @keyframes popIn {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+  
+  @keyframes glow {
+    0% { box-shadow: 0 0 0 rgba(46,139,46,0); }
+    50% { box-shadow: 0 0 25px rgba(46,139,46,0.8); }
+    100% { box-shadow: 0 0 0 rgba(46,139,46,0); }
+  }
+  
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-10px); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(-10px); }
+    80% { transform: translateX(10px); }
+  }
+  
+  .slot-number {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: #8b0000;
+    color: #F0A32F;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    font-weight: bold;
+    border: 1px solid #F0A32F;
+    z-index: 2;
+  }
+  
+  /* Building Bank */
+  .building-bank {
+    background: linear-gradient(135deg, #fff8e7, #f5e6c8);
+    border: 3px solid #8b0000;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  }
+  
+  .bank-title {
+    color: #8b0000;
+    text-align: center;
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+  
+  /* 图库区：两排整齐排列 */
+  .buildings-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px 10px;
+    justify-items: center;
+    padding-bottom: 5px;
+  }
+  
+  .building {
+    width: 100%;
+    max-width: 140px;
+    cursor: grab;
+    transition: transform 0.2s;
+    user-select: none;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  
+  .building:hover { transform: translateY(-5px) scale(1.05); }
+  .building:active { cursor: grabbing; }
+  .building.dragging { opacity: 0.5; }
+  
+  .building.placed { 
+    max-width: 100%; 
+    height: 100%;
+    justify-content: flex-end;
+    cursor: pointer;
+  }
+  .building.placed:hover { transform: none; }
+  
+  .building-art {
+    width: 100%;
+    height: 90px;
+    position: relative;
+    pointer-events: none;
+  }
+  
+  .building-art svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  
+  .building-label {
+    background: #8b0000;
+    color: #F0A32F;
+    padding: 4px;
+    border-radius: 4px;
+    margin-top: 5px;
+    font-size: 0.85em;
+    border: 1px solid #F0A32F;
+    line-height: 1.1;
+    font-weight: bold;
+    pointer-events: none;
+  }
+  
+  .building-label .pinyin {
+    font-size: 0.8em;
+    color: #ffeb99;
+    font-style: italic;
+    display: block;
+    font-weight: normal;
+  }
+  
+  /* Control buttons */
+  .controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  button {
+    background: linear-gradient(135deg, #c41e3a, #8b0000);
+    color: #F0A32F;
+    border: 2px solid #F0A32F;
+    padding: 12px 30px;
+    font-size: 1.05em;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    letter-spacing: 1px;
+  }
+  
+  button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 15px rgba(0,0,0,0.4);
+  }
+  
+  .hint-btn { background: linear-gradient(135deg, #d4a017, #8b6914); }
+  .reset-btn { background: linear-gradient(135deg, #555, #222); color: #fff; border-color: #ccc; }
+  
+  /* Fact popup */
+  .fact-popup {
+    background: linear-gradient(135deg, #fff8e7, #f5e6c8);
+    border: 3px solid #8b0000;
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 100px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    display: none;
+  }
+  
+  .fact-popup.show { display: block; animation: fadeIn 0.5s; }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .fact-title { color: #8b0000; font-size: 1.3em; font-weight: bold; margin-bottom: 8px; }
+  .fact-text { color: #4a0000; line-height: 1.6; font-size: 1.1em; }
+  
+  /* Victory screen */
+  .victory {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  
+  .victory.show { display: flex; }
+  
+  .victory-content {
+    background: linear-gradient(135deg, #c41e3a, #8b0000);
+    border: 5px solid #F0A32F;
+    border-radius: 20px;
+    padding: 50px;
+    text-align: center;
+    max-width: 500px;
+    box-shadow: 0 0 50px rgba(240,163,47,0.7);
+    animation: victoryPop 0.5s;
+  }
+  
+  @keyframes victoryPop {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+  .victory h2 { color: #F0A32F; font-size: 2.5em; margin-bottom: 15px; text-shadow: 2px 2px 0 #4a0000; }
+  .victory p { color: #ffeb99; font-size: 1.2em; margin-bottom: 20px; line-height: 1.5; }
+  .footer-note { text-align: center; color: #4a0000; font-size: 0.9em; margin-top: 20px; font-style: italic; padding: 10px; }
+
+  @media (max-width: 1024px) {
+    .buildings-container { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .buildings-container { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  
+  <div class="title-banner">
+    <h1>🏯 IMPERIAL PATH 🏯</h1>
+    <div class="subtitle">Journey Through the Forbidden City's Central Axis · 紫禁城中轴线</div>
+  </div>
+  
+  <div class="info-panel">
+    <div class="instructions">
+      <strong>👑 Your Quest:</strong> You are a young scholar approaching the Emperor! 
+      Drag each building from the bank below into the correct position along the imperial path, 
+      moving from <strong>South (Entrance) to North</strong>.<br>
+      <span style="color: #c41e3a; font-weight: bold;">(If you guess wrong, the building will bounce back! 拖放错误会直接弹回)</span>
+    </div>
+    <div class="score-box">⭐ Score: <span id="score">0</span></div>
+  </div>
+  
+  <!-- The Path Board -->
+  <div class="game-board">
+    <div class="board-title">⬇ THE IMPERIAL PATH · 中轴线 ⬇</div>
+    <div class="imperial-path" id="path">
+      <div class="compass">North 北 <span class="compass-arrow">➡</span></div>
+      <!-- 11 slots will be generated by JS -->
+    </div>
+  </div>
+  
+  <!-- Building Bank -->
+  <div class="building-bank">
+    <div class="bank-title">🏛️ Drag the Buildings into Order 🏛️</div>
+    <div class="buildings-container" id="bank">
+      <!-- Buildings will be generated by JS -->
+    </div>
+  </div>
+  
+  <div class="controls">
+    <!-- Check Path button removed for instant-validation gameplay -->
+    <button class="hint-btn" onclick="showHint()">💡 Hint</button>
+    <button class="reset-btn" onclick="resetGame()">↻ Reset</button>
+  </div>
+  
+  <div class="fact-popup" id="factPopup">
+    <div class="fact-title" id="factTitle"></div>
+    <div class="fact-text" id="factText"></div>
+  </div>
+  
+  <div class="footer-note">
+    🐉 The Forbidden City (紫禁城) was built between 1406-1420, the imperial heart of China for over 500 years 🐉
+  </div>
+  
+</div>
+
+<!-- Victory Screen -->
+<div class="victory" id="victory">
+  <div class="victory-content">
+    <h2>🎉 IMPERIAL SCHOLAR! 🎉</h2>
+    <p>You have mastered the central axis of the Forbidden City!<br>
+    The Emperor honors your wisdom. 皇上嘉奖!</p>
+    <p style="font-size: 2em;">🏆 ⭐ 🐉 ⭐ 🏆</p>
+    <button onclick="resetGame()">Play Again</button>
+  </div>
+</div>
+
+<script>
+// === BUILDING DATA: 扩充为 11 座中轴线建筑 (South to North) ===
+const buildings = [
+  {
+    id: 'wumen', name: '午门', pinyin: 'Wǔmén', english: 'Meridian Gate',
+    art: 'gate-grand',
+    fact: 'The grand southern entrance! With 5 archways and two protruding wings, this is where emperors announced victories and where the lunar calendar was proclaimed each year.'
+  },
+  {
+    id: 'taihemen', name: '太和门', pinyin: 'Tàihémén', english: 'Gate of Supreme Harmony',
+    art: 'gate-medium',
+    fact: 'Guarded by giant bronze lions! In the early Qing dynasty, emperors held court here. You must cross the Inner Golden Water River to reach it.'
+  },
+  {
+    id: 'taihedian', name: '太和殿', pinyin: 'Tàihédiàn', english: 'Hall of Supreme Harmony',
+    art: 'hall-grand',
+    fact: 'The MOST IMPORTANT building! Tallest hall in the Forbidden City (35m). Site of coronations, royal weddings, and New Year ceremonies. Houses the Dragon Throne!'
+  },
+  {
+    id: 'zhonghedian', name: '中和殿', pinyin: 'Zhōnghédiàn', english: 'Hall of Central Harmony',
+    art: 'hall-small-square',
+    fact: 'The small square hall! The emperor rested here before grand ceremonies and reviewed speeches. Its pyramid-shaped roof topped with a golden ball is unique!'
+  },
+  {
+    id: 'baohedian', name: '保和殿', pinyin: 'Bǎohédiàn', english: 'Hall of Preserving Harmony',
+    art: 'hall-medium',
+    fact: 'The exam hall! The final round of the Imperial Examination was held here. The emperor personally tested top scholars to choose officials!'
+  },
+  {
+    id: 'qianqingmen', name: '乾清门', pinyin: 'Qiánqīngmén', english: 'Gate of Heavenly Purity',
+    art: 'gate-small',
+    fact: 'The dividing line! This gate separates the Outer Court (work) from the Inner Court (emperor\'s home). Qing emperors held daily "Gate Audiences" here.'
+  },
+  {
+    id: 'qianqinggong', name: '乾清宫', pinyin: 'Qiánqīnggōng', english: 'Palace of Heavenly Purity',
+    art: 'hall-medium',
+    fact: 'The emperor\'s bedroom! Ming emperors slept here. Above the throne hangs the famous plaque "Just and Honorable" - secret succession edicts were hidden behind it!'
+  },
+  {
+    id: 'jiaotaidian', name: '交泰殿', pinyin: 'Jiāotàidiàn', english: 'Hall of Union',
+    art: 'hall-tiny-square',
+    fact: 'The empress\'s ceremonial hall! She received birthday greetings here. It stores the 25 Imperial Seals - symbols of imperial authority!'
+  },
+  {
+    id: 'kunninggong', name: '坤宁宫', pinyin: 'Kūnnínggōng', english: 'Palace of Earthly Tranquility',
+    art: 'hall-medium',
+    fact: 'The empress\'s palace and royal wedding hall! Emperors had wedding ceremonies here in the bridal chamber.'
+  },
+  {
+    id: 'qinandian', name: '钦安殿', pinyin: 'Qīn\'āndiàn', english: 'Hall of Imperial Peace',
+    art: 'hall-temple',
+    fact: 'The only Taoist temple on the central axis! Located in the Imperial Garden, dedicated to Zhenwu (God of Water) to protect the wooden palaces from fire.'
+  },
+  {
+    id: 'shenwumen', name: '神武门', pinyin: 'Shénwǔmén', english: 'Gate of Divine Prowess',
+    art: 'gate-north',
+    fact: 'The northern exit! It originally had a bell and drum to announce the time. This was the daily gate used by palace maids, eunuchs, and the imperial family.'
+  }
+];
+
+let placedBuildings = {};
+let score = 0;
+let hintsUsed = 0;
+
+// ============================================================================
+// Web Audio API 音效系统 (无需外部文件)
+// ============================================================================
+let audioCtx;
+
+function initAudio() {
+  if (!audioCtx) {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioContext();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}
+
+function playSound(type) {
+  initAudio();
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  
+  const now = audioCtx.currentTime;
+  
+  if (type === 'wrong') {
+    // 低沉错误的嗡嗡声
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(150, now);
+    osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    osc.start(now);
+    osc.stop(now + 0.3);
+  } else if (type === 'correct') {
+    // 清脆满意的叮声
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(500, now);
+    osc.frequency.setValueAtTime(800, now + 0.1);
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    osc.start(now);
+    osc.stop(now + 0.3);
+  } else if (type === 'victory') {
+    // 胜利琶音
+    osc.type = 'square';
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+        osc.frequency.setValueAtTime(freq, now + i * 0.15);
+    });
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.linearRampToValueAtTime(0, now + 0.6);
+    osc.start(now);
+    osc.stop(now + 0.6);
+  }
+}
+
+// 首次点击或拖拽时激活音频
+document.addEventListener('dragstart', initAudio, { once: true });
+document.addEventListener('click', initAudio, { once: true });
+
+// ============================================================================
+// SVG 生成器
+// ============================================================================
+function getBuildingArt(type) {
+  if (type === 'gate-grand') return `
+    <svg viewBox="0 0 100 100" overflow="visible">
+      <polygon points="0,55 100,55 100,100 0,100" fill="#B32821"/>
+      <rect x="0" y="55" width="100" height="4" fill="#F9F9F9"/> 
+      <path d="M 40 100 L 40 85 A 10 10 0 0 1 60 85 L 60 100 Z" fill="#3A120E"/>
+      <path d="M 18 100 L 18 90 A 6 6 0 0 1 30 90 L 30 100 Z" fill="#3A120E"/>
+      <path d="M 70 100 L 70 90 A 6 6 0 0 1 82 90 L 82 100 Z" fill="#3A120E"/>
+      <path d="M 38 85 A 12 12 0 0 1 62 85" fill="none" stroke="#F9F9F9" stroke-width="1.5"/>
+      <path d="M 16 90 A 8 8 0 0 1 32 90" fill="none" stroke="#F9F9F9" stroke-width="1"/>
+      <path d="M 68 90 A 8 8 0 0 1 84 90" fill="none" stroke="#F9F9F9" stroke-width="1"/>
+      <rect x="2" y="47" width="16" height="8" fill="#323232"/>
+      <polygon points="0,47 10,38 20,38 20,47" fill="#F0A32F"/>
+      <line x1="0" y1="47" x2="20" y2="47" stroke="#C77800" stroke-width="1.5"/>
+      <rect x="82" y="47" width="16" height="8" fill="#323232"/>
+      <polygon points="100,47 90,38 80,38 80,47" fill="#F0A32F"/>
+      <line x1="80" y1="47" x2="100" y2="47" stroke="#C77800" stroke-width="1.5"/>
+      <rect x="24" y="47" width="52" height="8" fill="#323232"/>
+      <rect x="26" y="35" width="48" height="12" fill="#B32821"/>
+      <rect x="47" y="37" width="6" height="8" fill="#0F4471" stroke="#F1C40F" stroke-width="1"/>
+      <polygon points="18,47 28,35 72,35 82,47" fill="#F0A32F"/>
+      <line x1="18" y1="47" x2="82" y2="47" stroke="#C77800" stroke-width="1.5"/>
+      <rect x="30" y="27" width="40" height="8" fill="#323232"/>
+      <polygon points="24,27 35,14 65,14 76,27" fill="#F0A32F"/>
+      <line x1="24" y1="27" x2="76" y2="27" stroke="#C77800" stroke-width="1.5"/>
+      <rect x="34" y="10" width="32" height="4" fill="#C77800"/>
+      <polygon points="34,14 34,8 30,11" fill="#C77800"/>
+      <polygon points="66,14 66,8 70,11" fill="#C77800"/>
+    </svg>`;
+    
+  if (type === 'hall-grand') return `
+    <svg viewBox="0 0 100 100" overflow="visible">
+      <rect x="5" y="85" width="90" height="15" fill="#F9F9F9" stroke="#CCCCCC" stroke-width="0.5"/>
+      <rect x="10" y="80" width="80" height="5" fill="#F9F9F9" stroke="#CCCCCC" stroke-width="0.5"/>
+      <rect x="15" y="75" width="70" height="5" fill="#F9F9F9" stroke="#CCCCCC" stroke-width="0.5"/>
+      <line x1="5" y1="92" x2="95" y2="92" stroke="#CCCCCC" stroke-width="0.5"/>
+      <rect x="18" y="52" width="64" height="23" fill="#B32821"/>
+      <rect x="22" y="56" width="56" height="19" fill="#5A1511"/>
+      <rect x="18" y="52" width="4" height="23" fill="#D32F2F"/>
+      <rect x="30" y="52" width="4" height="23" fill="#D32F2F"/>
+      <rect x="48" y="52" width="4" height="23" fill="#D32F2F"/>
+      <rect x="66" y="52" width="4" height="23" fill="#D32F2F"/>
+      <rect x="78" y="52" width="4" height="23" fill="#D32F2F"/>
+      <rect x="14" y="44" width="72" height="8" fill="#323232"/>
+      <rect x="16" y="46" width="68" height="4" fill="#185854"/>
+      <line x1="16" y1="48" x2="84" y2="48" stroke="#F0A32F" stroke-width="1" stroke-dasharray="2 2"/>
+      <polygon points="0,44 14,32 86,32 100,44" fill="#F0A32F"/>
+      <line x1="0" y1="44" x2="100" y2="44" stroke="#C77800" stroke-width="2"/>
+      <rect x="22" y="24" width="56" height="8" fill="#323232"/>
+      <rect x="24" y="26" width="52" height="4" fill="#185854"/>
+      <line x1="24" y1="28" x2="76" y2="28" stroke="#F0A32F" stroke-width="1" stroke-dasharray="2 2"/>
+      <rect x="46" y="25" width="8" height="11" fill="#0F4471" stroke="#F1C40F" stroke-width="1.5"/>
+      <polygon points="10,24 24,8 76,8 90,24" fill="#F0A32F"/>
+      <line x1="10" y1="24" x2="90" y2="24" stroke="#C77800" stroke-width="2"/>
+      <rect x="23" y="4" width="54" height="4" fill="#C77800"/>
+      <polygon points="23,8 23,2 18,5" fill="#C77800"/>
+      <polygon points="77,8 77,2 82,5" fill="#C77800"/>
+    </svg>`;
+
+  if (type === 'hall-medium') return `
+    <svg viewBox="0 0 100 100" overflow="visible">
+      <rect x="10" y="85" width="80" height="15" fill="#F9F9F9" stroke="#CCCCCC" stroke-width="0.5"/>
+      <rect x="15" y="80" width="70" height="5" fill="#F9F9F9" stroke="#CCCCCC" stroke-width="0.5"/>
+      <line x1="10" y1="92" x2="90" y2="92" stroke="#CCCCCC" stroke-width="0.5"/>
+      <rect x="22" y="52" width="56" height="28" fill="#B32821"/>
+      <rect x="26" y="56" width="48" height="24" fill="#5A1511"/>
+      <rect x="22" y="52" width="4" height="28" fill="#D32F2F"/>
+      <rect x="36" y="52" width="4" height="28" fill="#D32F2F"/>
+      <rect x="60" y="52" width="4" height="28" fill="#D32F2F"/>
+      <rect x="74" y="52" width="4" height="28" fill="#D32F2F"/>
+      <rect x="18" y="44" width="64" height="8" fill="#323232"/>
+      <rect x="20" y="46" width="60" height="4" fill="#185854"/>
+      <polygon points="4,44 18,32 82,32 96,44" fill="#F0A32F"/>
+      <line x1="4" y1="44" x2="96" y2="44" stroke="#C77800" stroke-width="2"/>
+      <rect x="26" y="24" width="48" height="8" fill="#323232"/>
+      <polygon points="26,24 26,14 74,14 74,24" fill="#B32821"/> 
+      <rect x="46" y="24" width="8" height="10" fill="#0F4471" stroke="#F1C40F" stroke-width="1.5"/>
+      <polygon points="16,24 30,8 70,8 84,24" fill="#F0A32F"/>
+      <line x1="16" y1="24" x2="84" y2="24" stroke="#C77800" stroke-width="2"/>
+      <rect x="29" y="4" width="42" height="4" fill="#C77800"/>
+      <polygon points="29,8 29,2 24,5" fill="#C77800"/>
+      <polygon points="71,8 71,2 76,5" fill="#C77800"/>
+    </svg>`;
+
+  if (type === 'hall-small-square') return `
+    <svg viewBox="0 0 100 100" overflow="visible">
+      <rect x="15" y="85" width="70" height="15" fill="#F9F9F9" stroke="#CCCCCC" stroke-width="0.5"/>
+      <rect x="28" y="52" width="44" height="33" fill="#B32821"/>
+      <rect x="32" y="58" width="36" height="27" fill="#5A1511"/>
+      <rect x="28" y="52" width="4" height="33" fill="#D32F2F"/>
+      <rect x="48" y="52" width="4" height="33" fill="#D32F2F"/>
+      <rect x="68" y="52" width="4" height="33" fill="#D32F2F"/>
+      <rect x="24" y="42" width="52" height="10" fill="#323232"/>
+      <rect x="26" y="45" width="48" height="4" fill="#185854"/>
+      <polygon points="10,42 50,15 90,42" fill="#F0A32F"/>
+      <line x1="10" y1="42" x2="90" y2="42" stroke="#C77800" stroke-width="2"/>
+      <line x1="50" y1="15" x2="30" y2="42" stroke="#C77800" stroke-width="1.5"/>
+      <line x1="50" y1="15" x2="70" y2="42" stroke="#C77800" stroke-width="1.5"/>
+      <circle cx="50" cy="12" r="5" fill="#F1C40F"/>
+    </svg>`;
+
+  if (type === 'hall-tiny-square') return `
+    <svg viewBox="0 0 100 100" overflow="visible">
+      <g transform="scale(0.85)" transform-origin="50 100">
+        <rect x="15" y="85" width="70" height="15" fill="#F9F9F9" stroke="#CCCCCC"/>
+        <rect x="28" y="52" width="44" height="33" fill="#B32821"/>
+        <rect x="32" y="58" width="36" height="27" fill="#5A1511"/>
+        <rect x="28" y="52" width="4" height="33" fill="#D32F2F"/>
+        <rect x="48" y="52" width="4" height="33" fill="#D32F2F"/>
+        <rect x="68" y="52" width="4" height="33" fill="#D32F2F"/>
+        <rect x="24" y="42" width="52" height="10" fill="#323232"/>
+        <rect x="26" y="45" width="48" height="4" fill="#185854"/>
+        <polygon points="10,42 50,15 90,42" fill="#F0A32F"/>
+        <line x1="10" y1="42" x2="90" y2="42" stroke="#C77800" stroke-width="2"/>
+        <line x1="50" y1="15" x2="30" y2="42" stroke="#C77800" stroke-width="1.5"/>
+        <line x1="50" y1="15" x2="70" y2="42" stroke="#C77800" stroke-width="1.5"/>
+        <circle cx="50" cy="12" r="5" fill="#F1C40F"/>
+      </g>
+    </svg>`;
+
+  if (type === 'hall-temple') return `
+    <svg viewBox="0 0 100 100" overflow="visible">
+      <rect x="15" y="85" width="70" height="15" fill="#F9F9F9" stroke="#CCCCCC" stroke-width="0.5"/>
+      <rect x="26" y="55" width="48" height="30" fill="#B32821"/>
+      <rect x="30" y="60" width="40" height="25" fill="#5A1511"/>
+      <rect x="26" y="55" width="4" height="30" fill="#D32F2F"/>
+      <rect x="48" y="55" width="4" height="30" fill="#D32F2F"/>
+      <rect x="70" y="55" width="4" height="30" fill="#D32F2F"/>
+      <rect x="22" y="47" width="56" height="8" fill="#323232"/>
+      <rect x="24" y="49" width="52" height="4" fill="#185854"/>
+      <rect x="46" y="49" width="8" height="6" fill="#0F4471" stroke="#F1C40F" stroke-width="1"/>
+      <polygon points="12,47 32,25 68,25 88,47" fill="#F0A32F"/>
+      <line x1="12" y1="47" x2="88" y2="47" stroke="#C77800" stroke-width="2"/>
+      <rect x="32" y="21" width="36" height="4" fill="#C77800"/>
+      <rect x="46" y="15" width="8" height="6" fill="#F1C40F"/>
+    </svg>`;
+
+  if (type === 'gate-medium' || type === 'gate-small') {
+    const s = type === 'gate-small' ? 'scale(0.85)' : 'scale(1)';
+    return `
+    <svg viewBox="0 0 100 100" overflow="visible">
+      <g transform="${s}" transform-origin="50 100">
+        <rect x="10" y="85" width="80" height="15" fill="#F9F9F9" stroke="#CCCCCC"/>
+        <rect x="0" y="60" width="20" height="40" fill="#B32821"/>
+        <rect x="80" y="60" width="20" height="40" fill="#B32821"/>
+        <polygon points="0,60 10,53 20,60" fill="#F0A32F"/>
+        <polygon points="80,60 90,53 100,60" fill="#F0A32F"/>
+        <rect x="20" y="50" width="60" height="35" fill="#3A120E"/> 
+        <rect x="20" y="50" width="5" height="35" fill="#D32F2F"/>
+        <rect x="38" y="50" width="5" height="35" fill="#D32F2F"/>
+        <rect x="57" y="50" width="5" height="35" fill="#D32F2F"/>
+        <rect x="75" y="50" width="5" height="35" fill="#D32F2F"/>
+        <rect x="16" y="40" width="68" height="10" fill="#323232"/>
+        <rect x="18" y="43" width="64" height="4" fill="#185854"/>
+        <polygon points="25,40 25,25 75,25 75,40" fill="#B32821"/> 
+        <rect x="46" y="38" width="8" height="10" fill="#0F4471" stroke="#F1C40F" stroke-width="1.5"/>
+        <polygon points="6,40 25,18 75,18 94,40" fill="#F0A32F"/>
+        <line x1="6" y1="40" x2="94" y2="40" stroke="#C77800" stroke-width="2"/>
+        <rect x="24" y="14" width="52" height="4" fill="#C77800"/>
+        <polygon points="24,18 24,12 19,15" fill="#C77800"/>
+        <polygon points="76,18 76,12 81,15" fill="#C77800"/>
+      </g>
+    </svg>`;
+  }
+
+  if (type === 'gate-north') return `
+    <svg viewBox="0 0 100 100" overflow="visible">
+      <polygon points="5,60 95,60 95,100 5,100" fill="#B32821"/>
+      <rect x="5" y="60" width="90" height="4" fill="#F9F9F9"/>
+      <path d="M 40 100 L 40 82 A 10 10 0 0 1 60 82 L 60 100 Z" fill="#3A120E"/>
+      <path d="M 20 100 L 20 88 A 6 6 0 0 1 32 88 L 32 100 Z" fill="#3A120E"/>
+      <path d="M 68 100 L 68 88 A 6 6 0 0 1 80 88 L 80 100 Z" fill="#3A120E"/>
+      <rect x="25" y="52" width="50" height="8" fill="#323232"/>
+      <rect x="27" y="40" width="46" height="12" fill="#B32821"/>
+      <rect x="46" y="42" width="8" height="8" fill="#0F4471" stroke="#F1C40F" stroke-width="1"/>
+      <polygon points="15,52 25,40 75,40 85,52" fill="#F0A32F"/>
+      <line x1="15" y1="52" x2="85" y2="52" stroke="#C77800" stroke-width="1.5"/>
+      <rect x="32" y="32" width="36" height="8" fill="#323232"/>
+      <polygon points="25,32 35,18 65,18 75,32" fill="#F0A32F"/>
+      <line x1="25" y1="32" x2="75" y2="32" stroke="#C77800" stroke-width="1.5"/>
+      <rect x="34" y="14" width="32" height="4" fill="#C77800"/>
+      <polygon points="34,18 34,12 30,15" fill="#C77800"/>
+      <polygon points="66,18 66,12 70,15" fill="#C77800"/>
+    </svg>`;
+    
+  return '';
+}
+
+// === Build the slots ===
+function buildSlots() {
+  const path = document.getElementById('path');
+  const compass = path.querySelector('.compass');
+  path.innerHTML = '';
+  path.appendChild(compass);
+  for (let i = 0; i < buildings.length; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    slot.dataset.index = i;
+    slot.innerHTML = `<div class="slot-number">${i+1}</div>`;
+    slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
+    slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+    slot.addEventListener('drop', e => handleDrop(e, slot));
+    path.appendChild(slot);
+  }
+}
+
+// === Build the bank ===
+function buildBank() {
+  const bank = document.getElementById('bank');
+  bank.innerHTML = '';
+  const shuffled = [...buildings].sort(() => Math.random() - 0.5);
+  shuffled.forEach(b => {
+    const div = document.createElement('div');
+    div.className = 'building';
+    div.draggable = true;
+    div.dataset.id = b.id;
+    div.innerHTML = `
+      <div class="building-art">${getBuildingArt(b.art)}</div>
+      <div class="building-label">
+        ${b.name}
+        <span class="pinyin">${b.pinyin}</span>
+      </div>`;
+    div.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', b.id);
+      div.classList.add('dragging');
+      initAudio(); // 拖拽开始时唤醒音频
+    });
+    div.addEventListener('dragend', () => div.classList.remove('dragging'));
+    div.addEventListener('click', () => showFact(b));
+    bank.appendChild(div);
+  });
+}
+
+// === 核心：即时判断拖拽结果 ===
+function handleDrop(e, slot) {
+  e.preventDefault();
+  slot.classList.remove('drag-over');
+  
+  initAudio();
+  
+  const id = e.dataTransfer.getData('text/plain');
+  const building = buildings.find(b => b.id === id);
+  if (!building) return;
+
+  const slotIndex = parseInt(slot.dataset.index);
+  
+  // 防止重复覆盖正确的槽位
+  if (placedBuildings[slotIndex] === buildings[slotIndex].id) return;
+
+  if (id === buildings[slotIndex].id) {
+    // 🎉 放对了！
+    playSound('correct');
+    placedBuildings[slotIndex] = id;
+    
+    score += 10;
+    document.getElementById('score').textContent = score;
+
+    // 从图库移除
+    const bankItem = document.querySelector(`.building[data-id="${id}"]`);
+    if (bankItem) bankItem.remove();
+    
+    // 在槽位上展示
+    slot.innerHTML = `<div class="slot-number">${slotIndex+1}</div>`;
+    slot.classList.add('correct');
+    slot.classList.remove('incorrect');
+    
+    const placedDiv = document.createElement('div');
+    placedDiv.className = 'building placed';
+    placedDiv.dataset.id = id;
+    placedDiv.innerHTML = `
+      <div class="building-art">${getBuildingArt(building.art)}</div>
+      <div class="building-label">
+        ${building.name}
+        <span class="pinyin">${building.pinyin}</span>
+      </div>`;
+    placedDiv.addEventListener('click', () => showFact(building));
+    slot.appendChild(placedDiv);
+    
+    showFact(building);
+
+    // 检查是否通关
+    if (Object.keys(placedBuildings).length === buildings.length) {
+      setTimeout(() => {
+        playSound('victory');
+        document.getElementById('victory').classList.add('show');
+      }, 500);
+    }
+  } else {
+    // ❌ 放错了！(即时视觉反馈)
+    playSound('wrong');
+    slot.classList.add('incorrect');
+    
+    // 插入大红叉
+    const wrongMark = document.createElement('div');
+    wrongMark.className = 'wrong-mark';
+    wrongMark.innerHTML = '❌';
+    slot.appendChild(wrongMark);
+    
+    // 扣除盲目尝试的分数
+    score = Math.max(0, score - 2);
+    document.getElementById('score').textContent = score;
+    
+    // 移除错误特效，建筑自然“弹回”到原先的图库区中（因为它并未被添加到槽位的 DOM 中）
+    setTimeout(() => {
+      slot.classList.remove('incorrect');
+      wrongMark.remove();
+    }, 600);
+  }
+}
+
+// === Show building fact (点击查看建筑详情) ===
+function showFact(building) {
+  const popup = document.getElementById('factPopup');
+  document.getElementById('factTitle').textContent = `${building.name} (${building.pinyin}) - ${building.english}`;
+  document.getElementById('factText').textContent = building.fact;
+  popup.classList.add('show');
+}
+
+// === Show Hint (净化版提示，只有纯英文功能描述，不包含中英文名称) ===
+function showHint() {
+  initAudio();
+  for (let i = 0; i < buildings.length; i++) {
+    if (placedBuildings[i] !== buildings[i].id) {
+      const building = buildings[i];
+      // 纯净的线索提示，强制去除名字相关字段的获取
+      alert(`💡 Hint for Position ${i+1}:\n\n${building.fact}`);
+      hintsUsed++;
+      score = Math.max(0, score - 5);
+      document.getElementById('score').textContent = score;
+      return;
+    }
+  }
+  alert('🎉 All positions are already correct!');
+}
+
+// === Reset Game ===
+function resetGame() {
+  placedBuildings = {};
+  score = 0;
+  hintsUsed = 0;
+  document.getElementById('score').textContent = 0;
+  document.getElementById('victory').classList.remove('show');
+  document.getElementById('factPopup').classList.remove('show');
+  buildSlots();
+  buildBank();
+}
+
+// === Initialize ===
+buildSlots();
+buildBank();
+</script>
+</body>
+</html>
